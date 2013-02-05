@@ -326,6 +326,17 @@ class Chef
       bootstrap_common_params(bootstrap, server.name)
     end
 
+    def bootstrap_for_node(server, bootstrap_ip_address)
+      bootstrap = Chef::Knife::Bootstrap.new
+      bootstrap.name_args = [bootstrap_ip_address]
+      bootstrap.config[:ssh_user] = config[:ssh_user]
+      bootstrap.config[:identity_file] = config[:identity_file]
+      bootstrap.config[:host_key_verify] = config[:host_key_verify]
+      bootstrap.config[:use_sudo] = true unless config[:ssh_user] == 'root'
+      bootstrap.config[:chef_node_name] = locate_config_value(:chef_node_name) || server.name
+      bootstrap_common_params(bootstrap, server.name)
+    end
+
     def bootstrap_common_params(bootstrap, server_name)
       bootstrap.config[:run_list] = config[:run_list]
       bootstrap.config[:prerelease] = config[:prerelease]
@@ -346,16 +357,6 @@ class Chef
 
     def image
       @image ||= connection.images.get(locate_config_value(:image))
-    end
-
-    def bootstrap_for_node(server, bootstrap_ip_address)
-      bootstrap = Chef::Knife::Bootstrap.new
-      bootstrap.name_args = [bootstrap_ip_address]
-      bootstrap.config[:ssh_user] = config[:ssh_user]
-      bootstrap.config[:identity_file] = config[:identity_file]
-      bootstrap.config[:host_key_verify] = config[:host_key_verify]
-      bootstrap.config[:use_sudo] = true unless config[:ssh_user] == 'root'
-      bootstrap_common_params(bootstrap, server.name)
     end
 
     def ami
