@@ -15,9 +15,16 @@
 
 # Author:: Ameya Varade (<ameya.varade@clogeny.com>)
 
+# FIXME For now we will fetch the  creds from a config file
 
-$:.unshift File.expand_path('../../lib', __FILE__)
-require 'chef/knife/bootstrap'
-require 'chef/knife/winrm_base'
-require 'chef/knife/openstack_server_create'
-require 'pedant'
+development:
+    openstack_username: username
+	openstack_password: password
+	openstack_tenant: tenant
+	openstack_auth_url: http://172.31.4.28:5000/v2.0/tokens
+
+testing:
+    openstack_username: username
+	openstack_password: password
+	openstack_tenant: tenant
+	openstack_auth_url: http://172.31.4.28:5000/v2.0/tokens
