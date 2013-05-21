@@ -24,7 +24,6 @@ end
 describe 'knife', knife: true, pending: !open_source? do
   include Pedant::RSpec::KnifeUtil
   include Pedant::RSpec::KnifeUtil::Node
-  get_chef_zero_template()
   context 'integration test' do
     context 'for create server' do
       let(:command) { "knife openstack server create 
