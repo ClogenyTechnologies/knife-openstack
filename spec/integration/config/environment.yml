@@ -18,13 +18,13 @@
 # FIXME For now we will fetch the  creds from a config file
 
 development:
-    openstack_username: username
-	openstack_password: password
-	openstack_tenant: tenant
-	openstack_auth_url: http://172.31.4.28:5000/v2.0/tokens
+  openstack_username: username
+  openstack_password: password
+  openstack_tenant: tenant
+  openstack_auth_url: http://172.31.4.28:5000/v2.0/tokens
 
 testing:
-    openstack_username: username
-	openstack_password: password
-	openstack_tenant: tenant
-	openstack_auth_url: http://172.31.4.28:5000/v2.0/tokens
+  openstack_username: username
+  openstack_password: password
+  openstack_tenant: tenant
+  openstack_auth_url: http://172.31.4.28:5000/v2.0/tokens

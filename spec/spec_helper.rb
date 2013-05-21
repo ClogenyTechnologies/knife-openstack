@@ -20,4 +20,16 @@ $:.unshift File.expand_path('../../lib', __FILE__)
 require 'chef/knife/bootstrap'
 require 'chef/knife/winrm_base'
 require 'chef/knife/openstack_server_create'
+require 'bundler/setup' # so we don't need to type 'bundle exec' to run it
+require 'rspec/core'
 require 'pedant'
+require 'pedant/opensource'
+require 'pedant/rspec/knife_util'
+require 'pedant/rspec/validations'
+require 'securerandom'
+
+# Pedant.config.platform_class = Pedant::OpenSourcePlatform
+# Pedant.config.suite = "spec"
+# Pedant.setup(ARGV)
+# puts Pedant::UI.new.info_banner
+# exit RSpec::Core::Runner.run(Pedant.config.rspec_args)

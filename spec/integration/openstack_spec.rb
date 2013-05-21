@@ -17,29 +17,30 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-require 'pedant/rspec/knife_util'
-require 'securerandom'
+def get_config()
+  YAML.load(File.read(File.expand_path("../config/environment.yml", __FILE__)))
+end
 
-describe 'knife-openstack', knife: true, pending: !open_source? do
-  context 'integration' do
-    context 'create server' do
-      include Pedant::RSpec::KnifeUtil
-      include Pedant::RSpec::KnifeUtil::Node
-
-      #FIXME Putting up basic place holder to think over
-      let(:command) { knife "openstack server create #{node_name} -c #{knife_config} --disable-editing" }
-      after(:each)  { knife "openstack server delete #{node_name} -c #{knife_config} --yes" }
-
-      context '- Linux VM' do
-        context '- Bootstrap' do
-          let(:requestor) { knife_admin }
-
-          it 'should succeed' do
-            should have_outcome :status => 0, :stdout => /Created server- \[#{node_name}\]/
-          end
-        end
+describe 'knife', knife: true, pending: !open_source? do
+  include Pedant::RSpec::KnifeUtil
+  include Pedant::RSpec::KnifeUtil::Node
+  get_chef_zero_template()
+  context 'integration test' do
+    context 'for create server' do
+      let(:command) { "knife openstack server create 
+        -N 'os-node-1' 
+        -s 'http://localhost:8983' 
+        --openstack-api-endpoint 'http://172.31.4.28:5000/v2.0/tokens' 
+        --openstack-password 'password'  
+        --openstack-tenant 'tenant' 
+        --openstack-username 'username'  
+        -I 'imageid'
+        --template-file '../templates/chef-full-chef-zero.erb'" }
+      after(:each)  { knife "openstack server delete #{node_name} --yes" }
+      let(:requestor) { knife_admin }
+      it 'should succeed' do
+        should have_outcome :status => 0, :stdout => /Created server- \[#{node_name}\]/      
       end
-
     end
   end
 end
