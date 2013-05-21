@@ -26,15 +26,7 @@ describe 'knife', knife: true, pending: !open_source? do
   include Pedant::RSpec::KnifeUtil::Node
   context 'integration test' do
     context 'for create server' do
-      let(:command) { "knife openstack server create 
-        -N 'os-node-1' 
-        -s 'http://localhost:8983' 
-        --openstack-api-endpoint 'http://172.31.4.28:5000/v2.0/tokens' 
-        --openstack-password 'password'  
-        --openstack-tenant 'tenant' 
-        --openstack-username 'username'  
-        -I 'imageid'
-        --template-file '../templates/chef-full-chef-zero.erb'" }
+      let(:command) { "knife openstack server create -N 'os-node-1' -s 'http://localhost:8983' --openstack-api-endpoint 'http://172.31.4.28:5000/v2.0/tokens' --openstack-password 'password' --openstack-tenant 'tenant' --openstack-username 'username' -I 'imageid' --template-file '../templates/chef-full-chef-zero.erb'" }
       after(:each)  { knife "openstack server delete #{node_name} --yes" }
       let(:requestor) { knife_admin }
       it 'should succeed' do
