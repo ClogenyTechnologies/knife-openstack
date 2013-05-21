@@ -28,8 +28,8 @@ require 'pedant/rspec/knife_util'
 require 'pedant/rspec/validations'
 require 'securerandom'
 
-# Pedant.config.platform_class = Pedant::OpenSourcePlatform
-# Pedant.config.suite = "spec"
-# Pedant.setup(ARGV)
-# puts Pedant::UI.new.info_banner
-# exit RSpec::Core::Runner.run(Pedant.config.rspec_args)
+Pedant.config.platform_class = Pedant::OpenSourcePlatform
+Pedant.config.suite = "spec"
+Pedant.setup(ARGV)
+puts Pedant::UI.new.info_banner
+exit RSpec::Core::Runner.run(Pedant.config.rspec_args)
