@@ -17,21 +17,57 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-def get_config()
-  YAML.load(File.read(File.expand_path("../config/environment.yml", __FILE__)))
+def append_openstack_creds(is_list_cmd = false)
+  openstack_config = YAML.load(File.read(File.expand_path("../config/environment.yml", __FILE__)))
+  openstack_creds_cmd = " --openstack-username #{openstack_config['development']['openstack_username']} --openstack-password #{openstack_config['development']['openstack_password']} --openstack-api-endpoint #{openstack_config['development']['openstack_auth_url']} "
+  if(!is_list_cmd)
+    openstack_creds_cmd = openstack_creds_cmd + " --openstack-tenant #{openstack_config['development']['openstack_tenant']} "
+  end
+  # puts File.read(File.expand_path("../templates/chef-full-chef-zero.erb", __FILE__))
+  openstack_creds_cmd
 end
+
+def create_template_file
+  linux_file = File.read(File.expand_path("../templates/chef-full-chef-zero.erb", __FILE__))
+  File.open("#{temp_repository}/chef-full-chef-zero.erb", 'w') {|f| f.write(linux_file)}
+end
+
+def linux_template_file_path
+  "#{temp_repository}/chef-full-chef-zero.erb"
+end
+
+def delete_instance_cmd(instace_name, stdout)
+  "knife openstack server delete " + find_id(instance_name, '#{stdout}') +
+  "-c #{knife_config}" +
+  append_openstack_creds() + "--yes"
+end
+
 
 describe 'knife', knife: true, pending: !open_source? do
   include Pedant::RSpec::KnifeUtil
   include Pedant::RSpec::KnifeUtil::Node
   context 'integration test' do
-    context 'for create server' do
-      let(:command) { "knife openstack server create -N 'os-node-1' -s 'http://localhost:8983' --openstack-api-endpoint 'http://172.31.4.28:5000/v2.0/tokens' --openstack-password 'password' --openstack-tenant 'tenant' --openstack-username 'username' -I 'imageid' --template-file '../templates/chef-full-chef-zero.erb'" }
-      after(:each)  { knife "openstack server delete #{node_name} --yes" }
+    context 'for create server' do\
+      before(:each) { create_template_file }
+      let(:command) { "knife openstack server create -N #{node_name} "+
+      "-I '9d155c01-1652-43bf-95f3-30893c40d423' -f '2' "+
+      "--template-file " + linux_template_file_path +
+      " -c #{knife_config}" +
+      append_openstack_creds() }
+      after(:each)  { delete_instance_cmd('#{node_name}', '#{stdout}') }
       let(:requestor) { knife_admin }
       it 'should succeed' do
-        should have_outcome :status => 0, :stdout => /Created server- \[#{node_name}\]/      
+        should have_outcome :status => 0, :stdout => /Created node\[#{node_name}\]/
       end
     end
+
+    context 'for flavor list' do
+      let(:command) { "knife openstack flavor list -c #{knife_config}" + append_openstack_creds(is_list_cmd = true) }
+      let(:requestor) { knife_admin }
+      it 'should succeed' do
+        should have_outcome :status => 0
+      end
+    end
+
   end
 end

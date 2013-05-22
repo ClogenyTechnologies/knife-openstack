@@ -27,6 +27,15 @@ require 'pedant/opensource'
 require 'pedant/rspec/knife_util'
 require 'pedant/rspec/validations'
 require 'securerandom'
+require 'pathname'
+require 'tmpdir'
+
+def find_id(instance_name, line)
+  if line.include?("#{instance_name}")    
+      puts "#{line}"
+      return "#{line}".split(' ').first
+  end
+end
 
 Pedant.config.platform_class = Pedant::OpenSourcePlatform
 Pedant.config.suite = "spec"
