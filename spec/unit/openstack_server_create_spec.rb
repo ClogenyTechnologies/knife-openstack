@@ -79,39 +79,6 @@ describe Chef::Knife::OpenstackServerCreate do
     end
   end
 
-  describe "run" do
-    before do
-      @openstack_servers.should_receive(:create).and_return(@new_openstack_server)
-      @openstack_connection.should_receive(:servers).and_return(@openstack_servers)
-      Fog::Compute::OpenStack.should_receive(:new).and_return(@openstack_connection)
-      @bootstrap = Chef::Knife::Bootstrap.new
-      Chef::Knife::Bootstrap.stub(:new).and_return(@bootstrap)
-      @bootstrap.should_receive(:run)
-      @knife_openstack_create.config[:run_list] = []
-      @knife_openstack_create.config[:floating_ip] = '-1'
-    end
-
-    it "Creates an OpenStack instance and bootstraps it" do
-      @new_openstack_server.should_receive(:wait_for).and_return(true)
-      @knife_openstack_create.run
-    end
-
-    it "Creates an OpenStack instance for Windows and bootstraps it" do
-      @bootstrap_win = Chef::Knife::BootstrapWindowsWinrm.new
-      Chef::Knife::BootstrapWindowsWinrm.stub(:new).and_return(@bootstrap_win)
-      Chef::Config[:knife][:bootstrap_protocol] = 'winrm'
-      @new_openstack_server.should_receive(:wait_for).and_return(true)
-      @knife_openstack_create.run
-    end
-
-    it "creates an OpenStack instance, assigns existing floating ip and bootstraps it" do
-      @knife_openstack_create.config[:floating_ip] = "111.111.111.111"
-      @new_openstack_server.should_receive(:wait_for).and_return(true)
-      @new_openstack_server.should_receive(:associate_address).with('111.111.111.111')
-      @knife_openstack_create.run
-    end
-  end
-
   describe "when configuring the bootstrap process" do
     before do
       @knife_openstack_create.config[:ssh_user] = "ubuntu"
