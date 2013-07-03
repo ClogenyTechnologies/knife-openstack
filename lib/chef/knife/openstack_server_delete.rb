@@ -1,7 +1,6 @@
 #
 # Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Author:: Matt Ray (<matt@opscode.com>)
-# Author:: Chirag Jog (<chirag@clogeny.com>)
 # Copyright:: Copyright (c) 2011-2013 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
@@ -19,23 +18,34 @@
 #
 
 require 'chef/knife/openstack_base'
-require 'chef/knife/cloud/openstack_server_create_options'
+require 'chef/knife/cloud/openstack_service'
+
+require 'chef/knife/cloud/server/delete_options'
+
+# These two are needed for the '--purge' deletion case
+require 'chef/node'
+require 'chef/api_client'
 
 class Chef
   class Knife
-    class OpenstackServerCreate < Knife
+    class OpenstackServerDelete < Knife
 
       include Knife::OpenstackBase
-      include Knife::Cloud::OpenstackServerCreateOptions
+      include Knife::Cloud::ServerDeleteOptions
 
-      banner "knife openstack server create (options)"
+      banner "knife openstack server delete SERVER [SERVER] (options)"
 
       def run
-          $stdout.sync = true
 
-          @cloud_service = Cloud::OpenstackService.new(self)
-          @cloud_service.server_create()
+        $stdout.sync = true
+
+        @cloud_service = Cloud::OpenstackService.new(self)
+
+        @name_args.each do |instance_id|
+          @cloud_service.server_delete(instance_id)
+        end
       end
+
     end
   end
 end

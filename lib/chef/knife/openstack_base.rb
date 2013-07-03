@@ -1,7 +1,6 @@
 #
 # Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Author:: Matt Ray (<matt@opscode.com>)
-# Author:: Chirag Jog (<chirag@clogeny.com>)
 # Copyright:: Copyright (c) 2011-2013 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
@@ -18,24 +17,32 @@
 # limitations under the License.
 #
 
-require 'chef/knife/openstack_base'
-require 'chef/knife/cloud/openstack_server_create_options'
+require 'chef/knife/openstack_helpers'
+require 'chef/knife/cloud/openstack_service_options'
 
 class Chef
   class Knife
-    class OpenstackServerCreate < Knife
+    module OpenstackBase
 
-      include Knife::OpenstackBase
-      include Knife::Cloud::OpenstackServerCreateOptions
+      include OpenstackHelpers
 
-      banner "knife openstack server create (options)"
-
-      def run
-          $stdout.sync = true
-
-          @cloud_service = Cloud::OpenstackService.new(self)
-          @cloud_service.server_create()
+      def self.included(includer)
+        includer.class_eval do
+          include Cloud::OpenstackServiceOptions
+        end
       end
+
+      def is_image_windows?
+        # Openstack image info does not have os type, so we use windows_bootstrap_protocol to interpret if we are creating windows server.
+        if not config[:windows_bootstrap_protocol].nil?
+          true
+        else
+          false
+        end
+      end
+
     end
   end
 end
+
+

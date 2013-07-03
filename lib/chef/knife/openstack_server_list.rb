@@ -1,7 +1,6 @@
 #
 # Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Author:: Matt Ray (<matt@opscode.com>)
-# Author:: Chirag Jog (<chirag@clogeny.com>)
 # Copyright:: Copyright (c) 2011-2013 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
@@ -19,22 +18,21 @@
 #
 
 require 'chef/knife/openstack_base'
-require 'chef/knife/cloud/openstack_server_create_options'
+require 'chef/knife/cloud/openstack_service'
 
 class Chef
   class Knife
-    class OpenstackServerCreate < Knife
+    class OpenstackServerList < Knife
 
       include Knife::OpenstackBase
-      include Knife::Cloud::OpenstackServerCreateOptions
 
-      banner "knife openstack server create (options)"
+      banner "knife openstack server list (options)"
 
       def run
-          $stdout.sync = true
+        $stdout.sync = true
 
-          @cloud_service = Cloud::OpenstackService.new(self)
-          @cloud_service.server_create()
+        @cloud_service = Cloud::OpenstackService.new(self)
+        @cloud_service.server_list()
       end
     end
   end
