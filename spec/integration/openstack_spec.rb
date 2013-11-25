@@ -41,12 +41,14 @@ end
 
 def get_ssh_credentials_for_windows_image
   " --ssh-user #{@os_windows_ssh_user}"+
-  " --ssh-password #{@os_windows_ssh_password}"
+  " --ssh-password #{@os_windows_ssh_password}"+
+  " --openstack-ssh-key-id #{@openstack_key_pair}"
 end
 
 def get_winrm_credentials
   " --winrm-user #{@os_winrm_user}"+
-  " --winrm-password #{@os_winrm_password}"
+  " --winrm-password #{@os_winrm_password}"+
+  " --openstack-ssh-key-id #{@openstack_key_pair}"
 end
 
 def rm_known_host
@@ -166,7 +168,7 @@ describe 'knife-openstack' , :if => is_config_present do
         " --template-file " + get_linux_template_file_path +
         " --server-url http://localhost:8889" +
         " --yes --server-create-timeout 1800" +
-        " --chef-node-name-prefix test" +
+        " --chef-node-name-prefix os-integration-test-" +
         get_ssh_credentials +
         " --identity-file #{temp_dir}/openstack.pem"+
         append_openstack_creds + " --sudo"}
