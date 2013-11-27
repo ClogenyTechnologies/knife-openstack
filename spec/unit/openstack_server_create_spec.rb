@@ -13,9 +13,15 @@ describe Chef::Knife::Cloud::OpenstackServerCreate do
   it_behaves_like Chef::Knife::Cloud::ServerCreateCommand, Chef::Knife::Cloud::OpenstackServerCreate.new
   
   describe "#create_service_instance" do
+    before(:each) do
+      @instance = Chef::Knife::Cloud::OpenstackServerCreate.new
+    end
     it "return OpenstackService instance" do
-      instance = Chef::Knife::Cloud::OpenstackServerCreate.new
-      expect(instance.create_service_instance).to be_an_instance_of(Chef::Knife::Cloud::OpenstackService)
+      expect(@instance.create_service_instance).to be_an_instance_of(Chef::Knife::Cloud::OpenstackService)
+    end
+
+    it "has custom_arguments as its option" do
+      expect(@instance.options.include? :custom_arguments).to be true
     end
   end
 
